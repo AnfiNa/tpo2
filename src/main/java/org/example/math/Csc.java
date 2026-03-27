@@ -1,6 +1,8 @@
 package org.example.math;
 
-public class Csc {
+import org.example.AbstractFunction;
+
+public class Csc implements AbstractFunction {
 
     private final Sin sin;
 

@@ -1,6 +1,8 @@
 package org.example.math;
 
-public class Sec {
+import org.example.AbstractFunction;
+
+public class Sec implements AbstractFunction {
 
     private final Cos cos;
 

@@ -1,6 +1,8 @@
 package org.example.math;
 
-public class Log10 {
+import org.example.AbstractFunction;
+
+public class Log10 implements AbstractFunction {
 
     private final Ln ln;
 

@@ -2,7 +2,7 @@ package org.example;
 
 import org.example.math.*;
 
-public class Function {
+public class Function implements AbstractFunction {
 
     private final Sin sin;
     private final Cos cos;
@@ -27,7 +27,7 @@ public class Function {
         this.log3 = log3;
         this.log10 = log10;
     }
-
+    @Override
     public double calculate(double x) {
 
         if (x <= 0) {

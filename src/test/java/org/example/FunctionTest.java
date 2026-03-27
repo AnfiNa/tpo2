@@ -1,6 +1,5 @@
 package org.example;
 
-import org.example.Function;
 import org.example.math.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

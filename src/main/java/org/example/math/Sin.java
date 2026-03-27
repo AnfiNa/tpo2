@@ -1,6 +1,8 @@
 package org.example.math;
 
-public class Sin {
+import org.example.AbstractFunction;
+
+public class Sin implements AbstractFunction {
 
     private static final double EPS = 1e-10;
     private static final int MAX_ITER = 100;

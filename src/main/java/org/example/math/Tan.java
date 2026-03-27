@@ -1,6 +1,8 @@
 package org.example.math;
 
-public class Tan {
+import org.example.AbstractFunction;
+
+public class Tan implements AbstractFunction {
 
     private final Sin sin;
     private final Cos cos;
@@ -10,6 +12,7 @@ public class Tan {
         this.cos = cos;
     }
 
+    @Override
     public double calculate(double x) {
         double cosVal = cos.calculate(x);
         if (Math.abs(cosVal) < 1e-10) return Double.NaN;
