@@ -4,13 +4,14 @@ import org.example.AbstractFunction;
 
 public class Log3 implements AbstractFunction {
 
-    private final Ln ln;
+    private final AbstractFunction ln;
 
-    public Log3(Ln ln) {
+    public Log3(AbstractFunction ln) {
         this.ln = ln;
     }
 
-    public double calculate(double x) {
-        return ln.calculate(x) / ln.calculate(3);
+    @Override
+    public double calculate(double x, double eps) {
+        return ln.calculate(x, eps) / ln.calculate(3, eps);
     }
 }

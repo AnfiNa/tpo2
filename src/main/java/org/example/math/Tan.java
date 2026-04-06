@@ -4,19 +4,19 @@ import org.example.AbstractFunction;
 
 public class Tan implements AbstractFunction {
 
-    private final Sin sin;
-    private final Cos cos;
+    private final AbstractFunction sin;
+    private final AbstractFunction cos;
 
-    public Tan(Sin sin, Cos cos) {
+    public Tan(AbstractFunction sin, AbstractFunction cos) {
         this.sin = sin;
         this.cos = cos;
     }
 
     @Override
-    public double calculate(double x) {
-        double cosVal = cos.calculate(x);
-        if (Math.abs(cosVal) < 1e-10) return Double.NaN;
+    public double calculate(double x, double eps) {
+        double cosVal = cos.calculate(x, eps);
+        if (Math.abs(cosVal) < eps) return Double.NaN;
 
-        return sin.calculate(x) / cosVal;
+        return sin.calculate(x, eps) / cosVal;
     }
 }

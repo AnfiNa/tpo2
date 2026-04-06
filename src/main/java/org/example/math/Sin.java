@@ -4,10 +4,10 @@ import org.example.AbstractFunction;
 
 public class Sin implements AbstractFunction {
 
-    private static final double EPS = 1e-10;
     private static final int MAX_ITER = 100;
 
-    public double calculate(double x) {
+    @Override
+    public double calculate(double x, double eps) {
         // нормализация в [-pi, pi]
         x = normalize(x);
 
@@ -18,7 +18,7 @@ public class Sin implements AbstractFunction {
             term *= -x * x / ((2 * i) * (2 * i + 1));
             sum += term;
 
-            if (Math.abs(term) < EPS) break;
+            if (Math.abs(term) < eps) break;
         }
 
         return sum;

@@ -4,13 +4,14 @@ import org.example.AbstractFunction;
 
 public class Cos implements AbstractFunction {
 
-    private final Sin sin;
+    private final AbstractFunction sin;
 
-    public Cos(Sin sin) {
+    public Cos(AbstractFunction sin) {
         this.sin = sin;
     }
 
-    public double calculate(double x) {
-        return sin.calculate(x + Math.PI / 2);
+    @Override
+    public double calculate(double x, double eps) {
+        return sin.calculate(x + Math.PI / 2, eps);
     }
 }

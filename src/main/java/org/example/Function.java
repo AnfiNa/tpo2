@@ -4,19 +4,19 @@ import org.example.math.*;
 
 public class Function implements AbstractFunction {
 
-    private final Sin sin;
-    private final Cos cos;
-    private final Tan tan;
-    private final Sec sec;
-    private final Csc csc;
+    private final AbstractFunction sin;
+    private final AbstractFunction cos;
+    private final AbstractFunction tan;
+    private final AbstractFunction sec;
+    private final AbstractFunction csc;
 
-    private final Ln ln;
-    private final Log2 log2;
-    private final Log3 log3;
-    private final Log10 log10;
+    private final AbstractFunction ln;
+    private final AbstractFunction log2;
+    private final AbstractFunction log3;
+    private final AbstractFunction log10;
 
-    public Function(Sin sin, Cos cos, Tan tan, Sec sec, Csc csc,
-                          Ln ln, Log2 log2, Log3 log3, Log10 log10) {
+    public Function(AbstractFunction sin, AbstractFunction cos, AbstractFunction tan, AbstractFunction sec, AbstractFunction csc,
+                    AbstractFunction ln, AbstractFunction log2, AbstractFunction log3, AbstractFunction log10) {
         this.sin = sin;
         this.cos = cos;
         this.tan = tan;
@@ -28,14 +28,14 @@ public class Function implements AbstractFunction {
         this.log10 = log10;
     }
     @Override
-    public double calculate(double x) {
+    public double calculate(double x, double eps) {
 
         if (x <= 0) {
-            double secX = sec.calculate(x);
-            double sinX = sin.calculate(x);
-            double cosX = cos.calculate(x);
-            double tanX = tan.calculate(x);
-            double cscX = csc.calculate(x);
+            double secX = sec.calculate(x, eps);
+            double sinX = sin.calculate(x, eps);
+            double cosX = cos.calculate(x, eps);
+            double tanX = tan.calculate(x, eps);
+            double cscX = csc.calculate(x, eps);
 
             if (Double.isNaN(secX) || Double.isNaN(tanX) || Double.isNaN(cscX)) {
                 return Double.NaN;
@@ -45,12 +45,12 @@ public class Function implements AbstractFunction {
 
         } else {
 
-            double log2X = log2.calculate(x);
-            double log3X = log3.calculate(x);
-            double log10X = log10.calculate(x);
-            double lnX = ln.calculate(x);
+            double log2X = log2.calculate(x, eps);
+            double log3X = log3.calculate(x, eps);
+            double log10X = log10.calculate(x, eps);
+            double lnX = ln.calculate(x, eps);
 
-            if (Math.abs(log3X) < 1e-10) return Double.NaN;
+            if (Math.abs(log3X) < eps) return Double.NaN;
 
             return (((log2X - log2X) + (log2X * log10X)) * log3X
                     - (log3X * lnX)) / log3X;

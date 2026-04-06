@@ -4,15 +4,16 @@ import org.example.AbstractFunction;
 
 public class Csc implements AbstractFunction {
 
-    private final Sin sin;
+    private final AbstractFunction sin;
 
-    public Csc(Sin sin) {
+    public Csc(AbstractFunction sin) {
         this.sin = sin;
     }
 
-    public double calculate(double x) {
-        double sinVal = sin.calculate(x);
-        if (Math.abs(sinVal) < 1e-10) return Double.NaN;
+    @Override
+    public double calculate(double x, double eps) {
+        double sinVal = sin.calculate(x, eps);
+        if (Math.abs(sinVal) < eps) return Double.NaN;
 
         return 1.0 / sinVal;
     }

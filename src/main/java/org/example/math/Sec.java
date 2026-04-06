@@ -4,15 +4,16 @@ import org.example.AbstractFunction;
 
 public class Sec implements AbstractFunction {
 
-    private final Cos cos;
+    private final AbstractFunction cos;
 
-    public Sec(Cos cos) {
+    public Sec(AbstractFunction cos) {
         this.cos = cos;
     }
 
-    public double calculate(double x) {
-        double cosVal = cos.calculate(x);
-        if (Math.abs(cosVal) < 1e-10) return Double.NaN;
+    @Override
+    public double calculate(double x, double eps) {
+        double cosVal = cos.calculate(x, eps);
+        if (Math.abs(cosVal) < eps) return Double.NaN;
 
         return 1.0 / cosVal;
     }
