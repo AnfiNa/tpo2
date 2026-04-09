@@ -1,6 +1,7 @@
 package org.example.math;
 
 import org.example.stub.TableFunctionStub;
+import org.example.testutil.CsvTestData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,26 +12,26 @@ class TanTest {
     private static final double EPS = 1e-6;
 
     @Test
-    void shouldCalculateInsideDomain() {
-        TableFunctionStub sinStub = new TableFunctionStub()
-                .add(Math.PI / 4, Math.sqrt(2) / 2);
-        TableFunctionStub cosStub = new TableFunctionStub()
-                .add(Math.PI / 4, Math.sqrt(2) / 2);
+    void shouldCalculateValuesFromCsv() {
+        TableFunctionStub sinStub = new TableFunctionStub();
+        TableFunctionStub cosStub = new TableFunctionStub();
+
+        for (CsvTestData.Row row : CsvTestData.load("testdata/math/tan.csv")) {
+            sinStub.add(row.getDouble("x"), row.getDouble("sinStub"));
+            cosStub.add(row.getDouble("x"), row.getDouble("cosStub"));
+        }
 
         Tan tan = new Tan(sinStub, cosStub);
 
-        assertEquals(1.0, tan.calculate(Math.PI / 4, EPS), EPS);
-    }
+        for (CsvTestData.Row row : CsvTestData.load("testdata/math/tan.csv")) {
+            double actual = tan.calculate(row.getDouble("x"), EPS);
+            double expected = row.getDouble("expected");
 
-    @Test
-    void shouldReturnNaNWhenCosIsZero() {
-        TableFunctionStub sinStub = new TableFunctionStub()
-                .add(Math.PI / 2, 1.0);
-        TableFunctionStub cosStub = new TableFunctionStub()
-                .add(Math.PI / 2, 0.0);
-
-        Tan tan = new Tan(sinStub, cosStub);
-
-        assertTrue(Double.isNaN(tan.calculate(Math.PI / 2, EPS)));
+            if (Double.isNaN(expected)) {
+                assertTrue(Double.isNaN(actual));
+            } else {
+                assertEquals(expected, actual, EPS);
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package org.example.math;
 
 import org.example.stub.TableFunctionStub;
+import org.example.testutil.CsvTestData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,24 +12,26 @@ class Log3Test {
     private static final double EPS = 1e-6;
 
     @Test
-    void shouldCalculateUsingLnStubTable() {
-        TableFunctionStub lnStub = new TableFunctionStub()
-                .add(9.0, 2.1972245773362196)
-                .add(3.0, 1.0986122886681098);
+    void shouldCalculateValuesFromCsv() {
+        var rows = CsvTestData.load("testdata/math/log3.csv");
+        TableFunctionStub lnStub = new TableFunctionStub();
+
+        for (CsvTestData.Row row : rows) {
+            lnStub.add(row.getDouble("x"), row.getDouble("lnX"));
+        }
+        lnStub.add(3.0, rows.get(0).getDouble("lnBase"));
 
         Log3 log3 = new Log3(lnStub);
 
-        assertEquals(2.0, log3.calculate(9.0, EPS), EPS);
-    }
+        for (CsvTestData.Row row : rows) {
+            double actual = log3.calculate(row.getDouble("x"), EPS);
+            double expected = row.getDouble("expected");
 
-    @Test
-    void shouldPropagateNaNOutsideDomain() {
-        TableFunctionStub lnStub = new TableFunctionStub()
-                .add(0.0, Double.NaN)
-                .add(3.0, 1.0986122886681098);
-
-        Log3 log3 = new Log3(lnStub);
-
-        assertTrue(Double.isNaN(log3.calculate(0.0, EPS)));
+            if (Double.isNaN(expected)) {
+                assertTrue(Double.isNaN(actual));
+            } else {
+                assertEquals(expected, actual, EPS);
+            }
+        }
     }
 }

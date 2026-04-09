@@ -1,6 +1,7 @@
 package org.example.math;
 
 import org.example.stub.TableFunctionStub;
+import org.example.testutil.CsvTestData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,22 +12,24 @@ class CscTest {
     private static final double EPS = 1e-6;
 
     @Test
-    void shouldCalculateInsideDomain() {
-        TableFunctionStub sinStub = new TableFunctionStub()
-                .add(Math.PI / 2, 1.0);
+    void shouldCalculateValuesFromCsv() {
+        TableFunctionStub sinStub = new TableFunctionStub();
+
+        for (CsvTestData.Row row : CsvTestData.load("testdata/math/csc.csv")) {
+            sinStub.add(row.getDouble("x"), row.getDouble("sinStub"));
+        }
 
         Csc csc = new Csc(sinStub);
 
-        assertEquals(1.0, csc.calculate(Math.PI / 2, EPS), EPS);
-    }
+        for (CsvTestData.Row row : CsvTestData.load("testdata/math/csc.csv")) {
+            double actual = csc.calculate(row.getDouble("x"), EPS);
+            double expected = row.getDouble("expected");
 
-    @Test
-    void shouldReturnNaNWhenSinIsZero() {
-        TableFunctionStub sinStub = new TableFunctionStub()
-                .add(0.0, 0.0);
-
-        Csc csc = new Csc(sinStub);
-
-        assertTrue(Double.isNaN(csc.calculate(0.0, EPS)));
+            if (Double.isNaN(expected)) {
+                assertTrue(Double.isNaN(actual));
+            } else {
+                assertEquals(expected, actual, EPS);
+            }
+        }
     }
 }

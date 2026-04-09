@@ -1,5 +1,6 @@
 package org.example.math;
 
+import org.example.testutil.CsvTestData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,23 +13,16 @@ class LnTest {
     private final Ln ln = new Ln();
 
     @Test
-    void shouldReturnNaNOutsideDomain() {
-        assertTrue(Double.isNaN(ln.calculate(0.0, EPS)));
-        assertTrue(Double.isNaN(ln.calculate(-1.0, EPS)));
-    }
+    void shouldCalculateValuesFromCsv() {
+        for (CsvTestData.Row row : CsvTestData.load("testdata/math/ln.csv")) {
+            double actual = ln.calculate(row.getDouble("x"), EPS);
+            double expected = row.getDouble("expected");
 
-    @Test
-    void shouldCalculateOne() {
-        assertEquals(0.0, ln.calculate(1.0, EPS), EPS);
-    }
-
-    @Test
-    void shouldCalculateTwo() {
-        assertEquals(Math.log(2.0), ln.calculate(2.0, EPS), EPS);
-    }
-
-    @Test
-    void shouldCalculateFraction() {
-        assertEquals(Math.log(0.5), ln.calculate(0.5, EPS), EPS);
+            if (Double.isNaN(expected)) {
+                assertTrue(Double.isNaN(actual));
+            } else {
+                assertEquals(expected, actual, EPS);
+            }
+        }
     }
 }

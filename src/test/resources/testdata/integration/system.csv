@@ -1,0 +1,5 @@
+stage;x;expected
+trig-stage;-0.7853981633974483;1.7071067811865475
+final-system-log;8.0;0.629828419296
+final-system-log-invalid;1.0;NaN
+final-system-trig-valid;-2.0;VALID

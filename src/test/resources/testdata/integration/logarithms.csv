@@ -1,0 +1,4 @@
+module;x;expected
+log2;8.0;3.0
+log3;9.0;2.0
+log10;10.0;1.0
