@@ -1,5 +1,8 @@
 stage;x;expected
+trig-stage;-1.0471975511965976;1.0773502691896257
 trig-stage;-0.7853981633974483;1.7071067811865475
+final-system-log;0.5;0.9941771762239265
+final-system-log;2.0;-0.3921171848959641
 final-system-log;8.0;0.629828419296
 final-system-log-invalid;1.0;NaN
 final-system-trig-valid;-2.0;VALID

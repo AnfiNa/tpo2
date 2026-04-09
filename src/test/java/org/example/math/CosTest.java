@@ -12,9 +12,11 @@ class CosTest {
 
     @Test
     void shouldCalculateValuesFromCsv() {
-        TableFunctionStub sinStub = new TableFunctionStub()
-                .add(Math.PI / 2, 1.0)
-                .add(Math.PI, 0.0);
+        TableFunctionStub sinStub = new TableFunctionStub();
+
+        for (CsvTestData.Row row : CsvTestData.load("testdata/math/cos.csv")) {
+            sinStub.add(row.getDouble("stubX"), row.getDouble("sinStub"));
+        }
 
         Cos cos = new Cos(sinStub);
 
