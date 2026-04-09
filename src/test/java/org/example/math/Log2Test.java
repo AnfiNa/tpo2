@@ -1,33 +1,34 @@
 package org.example.math;
 
+import org.example.stub.TableFunctionStub;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Log2Test {
+class Log2Test {
 
     private static final double EPS = 1e-6;
 
-    private final Ln ln = new Ln();
-    private final Log2 log2 = new Log2(ln);
-
     @Test
-    void shouldCalculateLog2OfOne() {
-        assertEquals(0.0, log2.calculate(1.0), EPS);
+    void shouldCalculateUsingLnStubTable() {
+        TableFunctionStub lnStub = new TableFunctionStub()
+                .add(8.0, 2.0794415416798357)
+                .add(2.0, 0.6931471805599453);
+
+        Log2 log2 = new Log2(lnStub);
+
+        assertEquals(3.0, log2.calculate(8.0, EPS), EPS);
     }
 
     @Test
-    void shouldCalculateLog2OfTwo() {
-        assertEquals(1.0, log2.calculate(2.0), EPS);
-    }
+    void shouldPropagateNaNOutsideDomain() {
+        TableFunctionStub lnStub = new TableFunctionStub()
+                .add(-1.0, Double.NaN)
+                .add(2.0, 0.6931471805599453);
 
-    @Test
-    void shouldCalculateLog2OfEight() {
-        assertEquals(3.0, log2.calculate(8.0), EPS);
-    }
+        Log2 log2 = new Log2(lnStub);
 
-    @Test
-    void shouldReturnNaNForNegativeValue() {
-        assertTrue(Double.isNaN(log2.calculate(-1.0)));
+        assertTrue(Double.isNaN(log2.calculate(-1.0, EPS)));
     }
 }

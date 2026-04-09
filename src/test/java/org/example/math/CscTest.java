@@ -1,34 +1,32 @@
 package org.example.math;
 
-
+import org.example.stub.TableFunctionStub;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CscTest {
+class CscTest {
 
     private static final double EPS = 1e-6;
 
-    private final Sin sin = new Sin();
-    private final Csc csc = new Csc(sin);
-
     @Test
-    void shouldCalculateCscPiOverTwo() {
-        assertEquals(1.0, csc.calculate(Math.PI / 2), EPS);
+    void shouldCalculateInsideDomain() {
+        TableFunctionStub sinStub = new TableFunctionStub()
+                .add(Math.PI / 2, 1.0);
+
+        Csc csc = new Csc(sinStub);
+
+        assertEquals(1.0, csc.calculate(Math.PI / 2, EPS), EPS);
     }
 
     @Test
-    void shouldCalculateCscMinusPiOverTwo() {
-        assertEquals(-1.0, csc.calculate(-Math.PI / 2), EPS);
-    }
+    void shouldReturnNaNWhenSinIsZero() {
+        TableFunctionStub sinStub = new TableFunctionStub()
+                .add(0.0, 0.0);
 
-    @Test
-    void shouldReturnNaNAtZero() {
-        assertTrue(Double.isNaN(csc.calculate(0.0)));
-    }
+        Csc csc = new Csc(sinStub);
 
-    @Test
-    void shouldReturnNaNAtPi() {
-        assertTrue(Double.isNaN(csc.calculate(Math.PI)));
+        assertTrue(Double.isNaN(csc.calculate(0.0, EPS)));
     }
 }

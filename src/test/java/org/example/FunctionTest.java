@@ -1,187 +1,105 @@
 package org.example;
 
-import org.example.math.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.example.stub.TableFunctionStub;
 import org.junit.jupiter.api.Test;
 
-public class FunctionTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    private static final double EPS = 1e-5;
+class FunctionTest {
 
-    private Function system;
-
-    @BeforeEach
-    void setUp() {
-        Sin sin = new Sin();
-        Cos cos = new Cos(sin);
-        Tan tan = new Tan(sin, cos);
-        Sec sec = new Sec(cos);
-        Csc csc = new Csc(sin);
-
-        Ln ln = new Ln();
-        Log2 log2 = new Log2(ln);
-        Log3 log3 = new Log3(ln);
-        Log10 log10 = new Log10(ln);
-
-        system = new Function(sin, cos, tan, sec, csc, ln, log2, log3, log10);
-    }
+    private static final double EPS = 1e-6;
 
     @Test
-    void shouldCalculateForNegativeXPiOverFour() {
+    void shouldCalculateTrigonometricBranchWithTableStubs() {
         double x = -Math.PI / 4;
 
-        double expected =
-                (((((1 / Math.cos(x)) - (1 / Math.cos(x)))
-                        + ((1 / Math.cos(x)) * Math.sin(x)))
-                        * Math.cos(x))
-                        - (Math.sin(x) * (1 / Math.sin(x))))
-                        / Math.tan(x);
+        TableFunctionStub sinStub = new TableFunctionStub().add(x, -Math.sqrt(2) / 2);
+        TableFunctionStub cosStub = new TableFunctionStub().add(x, Math.sqrt(2) / 2);
+        TableFunctionStub tanStub = new TableFunctionStub().add(x, -1.0);
+        TableFunctionStub secStub = new TableFunctionStub().add(x, Math.sqrt(2));
+        TableFunctionStub cscStub = new TableFunctionStub().add(x, -Math.sqrt(2));
 
-        double actual = system.calculate(x);
+        TableFunctionStub lnStub = new TableFunctionStub();
+        TableFunctionStub log2Stub = new TableFunctionStub();
+        TableFunctionStub log3Stub = new TableFunctionStub();
+        TableFunctionStub log10Stub = new TableFunctionStub();
 
-        Assertions.assertEquals(expected, actual, EPS);
+        Function function = new Function(
+                sinStub, cosStub, tanStub, secStub, cscStub,
+                lnStub, log2Stub, log3Stub, log10Stub
+        );
+
+        assertEquals(1.7071067811865475, function.calculate(x, EPS), EPS);
     }
 
     @Test
-    void shouldCalculateForNegativeXPiOverThree() {
-        double x = -Math.PI / 3;
+    void shouldReturnNaNForTrigonometricDiscontinuityPoint() {
+        double x = 0.0;
 
-        double expected =
-                (((((1 / Math.cos(x)) - (1 / Math.cos(x)))
-                        + ((1 / Math.cos(x)) * Math.sin(x)))
-                        * Math.cos(x))
-                        - (Math.sin(x) * (1 / Math.sin(x))))
-                        / Math.tan(x);
+        TableFunctionStub sinStub = new TableFunctionStub().add(x, 0.0);
+        TableFunctionStub cosStub = new TableFunctionStub().add(x, 1.0);
+        TableFunctionStub tanStub = new TableFunctionStub().add(x, 0.0);
+        TableFunctionStub secStub = new TableFunctionStub().add(x, 1.0);
+        TableFunctionStub cscStub = new TableFunctionStub().add(x, Double.NaN);
 
-        double actual = system.calculate(x);
+        Function function = new Function(
+                sinStub, cosStub, tanStub, secStub, cscStub,
+                new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub()
+        );
 
-        Assertions.assertEquals(expected, actual, EPS);
+        assertTrue(Double.isNaN(function.calculate(x, EPS)));
     }
 
     @Test
-    void shouldCalculateForPositiveXTwo() {
-        double x = 2.0;
+    void shouldReturnNaNForCosDependentTrigonometricPoint() {
+        double x = -Math.PI / 2;
 
-        double log2 = Math.log(x) / Math.log(2);
-        double log3 = Math.log(x) / Math.log(3);
-        double log10 = Math.log(x) / Math.log(10);
-        double ln = Math.log(x);
+        TableFunctionStub sinStub = new TableFunctionStub().add(x, -1.0);
+        TableFunctionStub cosStub = new TableFunctionStub().add(x, 0.0);
+        TableFunctionStub tanStub = new TableFunctionStub().add(x, Double.NaN);
+        TableFunctionStub secStub = new TableFunctionStub().add(x, Double.NaN);
+        TableFunctionStub cscStub = new TableFunctionStub().add(x, -1.0);
 
-        double expected =
-                (((((log2 - log2) + (log2 * log10)) * log3)
-                        - (log3 * ln)) / log3);
+        Function function = new Function(
+                sinStub, cosStub, tanStub, secStub, cscStub,
+                new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub()
+        );
 
-        double actual = system.calculate(x);
-
-        Assertions.assertEquals(expected, actual, EPS);
+        assertTrue(Double.isNaN(function.calculate(x, EPS)));
     }
 
     @Test
-    void shouldCalculateForPositiveXHalf() {
-        double x = 0.5;
+    void shouldCalculateLogarithmicBranchWithTableStubs() {
+        double x = 8.0;
 
-        double log2 = Math.log(x) / Math.log(2);
-        double log3 = Math.log(x) / Math.log(3);
-        double log10 = Math.log(x) / Math.log(10);
-        double ln = Math.log(x);
+        TableFunctionStub lnStub = new TableFunctionStub().add(x, 2.0794415416798357);
+        TableFunctionStub log2Stub = new TableFunctionStub().add(x, 3.0);
+        TableFunctionStub log3Stub = new TableFunctionStub().add(x, 1.8927892607143721);
+        TableFunctionStub log10Stub = new TableFunctionStub().add(x, 0.9030899869919435);
 
-        double expected =
-                (((((log2 - log2) + (log2 * log10)) * log3)
-                        - (log3 * ln)) / log3);
+        Function function = new Function(
+                new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub(),
+                lnStub, log2Stub, log3Stub, log10Stub
+        );
 
-        double actual = system.calculate(x);
-
-        Assertions.assertEquals(expected, actual, EPS);
+        assertEquals(0.629828419296, function.calculate(x, EPS), EPS);
     }
 
     @Test
-    void shouldReturnNaNForZero() {
-        Assertions.assertTrue(Double.isNaN(system.calculate(0.0)));
-    }
+    void shouldReturnNaNAtLogarithmicDependencyPoint() {
+        double x = 1.0;
 
-    @Test
-    void shouldReturnNaNForMinusPi() {
-        Assertions.assertTrue(Double.isNaN(system.calculate(-Math.PI)));
-    }
+        TableFunctionStub lnStub = new TableFunctionStub().add(x, 0.0);
+        TableFunctionStub log2Stub = new TableFunctionStub().add(x, 0.0);
+        TableFunctionStub log3Stub = new TableFunctionStub().add(x, 0.0);
+        TableFunctionStub log10Stub = new TableFunctionStub().add(x, 0.0);
 
-    @Test
-    void shouldReturnNaNForMinusPiOverTwo() {
-        Assertions.assertTrue(Double.isNaN(system.calculate(-Math.PI / 2)));
-    }
+        Function function = new Function(
+                new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub(), new TableFunctionStub(),
+                lnStub, log2Stub, log3Stub, log10Stub
+        );
 
-    @Test
-    void shouldReturnNaNForOne() {
-        Assertions.assertTrue(Double.isNaN(system.calculate(1.0)));
-    }
-
-    @Test
-    void shouldCalculateNearMinusPiButNotAtDiscontinuity() {
-        double x = -Math.PI + 0.001;
-        double actual = system.calculate(x);
-
-        Assertions.assertFalse(Double.isNaN(actual));
-        Assertions.assertFalse(Double.isInfinite(actual));
-    }
-
-    @Test
-    void shouldCalculateNearMinusPiOverTwoButNotAtDiscontinuity() {
-        double x = -Math.PI / 2 + 0.001;
-        double actual = system.calculate(x);
-
-        Assertions.assertFalse(Double.isNaN(actual));
-        Assertions.assertFalse(Double.isInfinite(actual));
-    }
-
-    @Test
-    void shouldCalculateNearOneFromLeft() {
-        double x = 0.999;
-        double actual = system.calculate(x);
-
-        Assertions.assertFalse(Double.isNaN(actual));
-        Assertions.assertFalse(Double.isInfinite(actual));
-    }
-
-    @Test
-    void shouldCalculateNearOneFromRight() {
-        double x = 1.001;
-        double actual = system.calculate(x);
-
-        Assertions.assertFalse(Double.isNaN(actual));
-        Assertions.assertFalse(Double.isInfinite(actual));
-    }
-
-    @Test
-    void shouldCalculateForLargePositiveX() {
-        double x = 10.0;
-
-        double log2 = Math.log(x) / Math.log(2);
-        double log3 = Math.log(x) / Math.log(3);
-        double log10 = Math.log(x) / Math.log(10);
-        double ln = Math.log(x);
-
-        double expected =
-                (((((log2 - log2) + (log2 * log10)) * log3)
-                        - (log3 * ln)) / log3);
-
-        double actual = system.calculate(x);
-
-        Assertions.assertEquals(expected, actual, EPS);
-    }
-
-    @Test
-    void shouldCalculateForArbitraryNegativeX() {
-        double x = -2.0;
-
-        double expected =
-                (((((1 / Math.cos(x)) - (1 / Math.cos(x)))
-                        + ((1 / Math.cos(x)) * Math.sin(x)))
-                        * Math.cos(x))
-                        - (Math.sin(x) * (1 / Math.sin(x))))
-                        / Math.tan(x);
-
-        double actual = system.calculate(x);
-
-        Assertions.assertEquals(expected, actual, EPS);
+        assertTrue(Double.isNaN(function.calculate(x, EPS)));
     }
 }

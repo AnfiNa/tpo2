@@ -4,7 +4,6 @@ import org.example.AbstractFunction;
 
 public class Ln implements AbstractFunction {
 
-    private static final double EPS = 1e-10;
     private static final int MAX_ITER = 100;
 
     @Override
@@ -16,13 +15,12 @@ public class Ln implements AbstractFunction {
 
         double term = z;
         double sum = 0;
-        // poshalka
 
         for (int n = 0; n < MAX_ITER; n++) {
             sum += term / (2 * n + 1);
             term *= z2;
 
-            if (Math.abs(term) < EPS) break;
+            if (Math.abs(term) < eps) break;
         }
 
         return 2 * sum;

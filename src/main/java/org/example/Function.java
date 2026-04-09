@@ -1,7 +1,5 @@
 package org.example;
 
-import org.example.math.*;
-
 public class Function implements AbstractFunction {
 
     private final AbstractFunction sin;

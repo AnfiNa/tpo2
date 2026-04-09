@@ -1,33 +1,34 @@
 package org.example.math;
 
+import org.example.stub.TableFunctionStub;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Log3Test {
+class Log3Test {
 
     private static final double EPS = 1e-6;
 
-    private final Ln ln = new Ln();
-    private final Log3 log3 = new Log3(ln);
-
     @Test
-    void shouldCalculateLog3OfOne() {
-        assertEquals(0.0, log3.calculate(1.0), EPS);
+    void shouldCalculateUsingLnStubTable() {
+        TableFunctionStub lnStub = new TableFunctionStub()
+                .add(9.0, 2.1972245773362196)
+                .add(3.0, 1.0986122886681098);
+
+        Log3 log3 = new Log3(lnStub);
+
+        assertEquals(2.0, log3.calculate(9.0, EPS), EPS);
     }
 
     @Test
-    void shouldCalculateLog3OfThree() {
-        assertEquals(1.0, log3.calculate(3.0), EPS);
-    }
+    void shouldPropagateNaNOutsideDomain() {
+        TableFunctionStub lnStub = new TableFunctionStub()
+                .add(0.0, Double.NaN)
+                .add(3.0, 1.0986122886681098);
 
-    @Test
-    void shouldCalculateLog3OfNine() {
-        assertEquals(2.0, log3.calculate(9.0), EPS);
-    }
+        Log3 log3 = new Log3(lnStub);
 
-    @Test
-    void shouldReturnNaNForZero() {
-        assertTrue(Double.isNaN(log3.calculate(0.0)));
+        assertTrue(Double.isNaN(log3.calculate(0.0, EPS)));
     }
 }

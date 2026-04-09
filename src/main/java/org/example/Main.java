@@ -1,28 +1,25 @@
 package org.example;
 
 import org.example.math.*;
-import org.example.CsvExporter;
 
 public class Main {
 
+    private static final double EPS = 1e-6;
+    private static final double STEP = 0.1;
+    private static final String OUTPUT_DIR = "csv-output";
+
     public static void main(String[] args) throws Exception {
-
-        double EPS = 1e-6;
-
-        // Тригонометрия
         AbstractFunction sin = new Sin();
         AbstractFunction cos = new Cos(sin);
         AbstractFunction tan = new Tan(sin, cos);
         AbstractFunction sec = new Sec(cos);
         AbstractFunction csc = new Csc(sin);
 
-        // Логарифмы
         AbstractFunction ln = new Ln();
         AbstractFunction log2 = new Log2(ln);
         AbstractFunction log3 = new Log3(ln);
         AbstractFunction log10 = new Log10(ln);
 
-        // Система
         AbstractFunction system = new Function(
                 sin, cos, tan, sec, csc,
                 ln, log2, log3, log10
@@ -30,9 +27,21 @@ public class Main {
 
         CsvExporter exporter = new CsvExporter();
 
-        // Примеры экспорта
-        exporter.export(sin, -Math.PI, Math.PI, 0.1, EPS, "sin.csv", ";");
-        exporter.export(ln, 0.1, 10.0, 0.1, EPS, "ln.csv", ";");
-        exporter.export(system, -5.0, 5.0, 0.1, EPS, "system.csv", ";");
+        exporter.export("sin", sin, -Math.PI, Math.PI, STEP, EPS, outputFile("sin.csv"), ";");
+        exporter.export("cos", cos, -Math.PI, Math.PI, STEP, EPS, outputFile("cos.csv"), ";");
+        exporter.export("tan", tan, -Math.PI / 2 + STEP, Math.PI / 2 - STEP, STEP, EPS, outputFile("tan.csv"), ";");
+        exporter.export("sec", sec, -Math.PI / 2 + STEP, Math.PI / 2 - STEP, STEP, EPS, outputFile("sec.csv"), ";");
+        exporter.export("csc", csc, -Math.PI + STEP, Math.PI - STEP, STEP, EPS, outputFile("csc.csv"), ";");
+
+        exporter.export("ln", ln, STEP, 10.0, STEP, EPS, outputFile("ln.csv"), ";");
+        exporter.export("log2", log2, STEP, 10.0, STEP, EPS, outputFile("log2.csv"), ";");
+        exporter.export("log3", log3, STEP, 10.0, STEP, EPS, outputFile("log3.csv"), ";");
+        exporter.export("log10", log10, STEP, 10.0, STEP, EPS, outputFile("log10.csv"), ";");
+
+        exporter.export("system", system, -5.0, 5.0, STEP, EPS, outputFile("system.csv"), ";");
+    }
+
+    private static String outputFile(String fileName) {
+        return OUTPUT_DIR + "/" + fileName;
     }
 }

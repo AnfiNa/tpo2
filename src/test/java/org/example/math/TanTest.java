@@ -1,34 +1,36 @@
 package org.example.math;
 
+import org.example.stub.TableFunctionStub;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TanTest {
+class TanTest {
 
     private static final double EPS = 1e-6;
 
-    private final Sin sin = new Sin();
-    private final Cos cos = new Cos(sin);
-    private final Tan tan = new Tan(sin, cos);
-
     @Test
-    void shouldCalculateTanPiOverFour() {
-        assertEquals(1.0, tan.calculate(Math.PI / 4), EPS);
+    void shouldCalculateInsideDomain() {
+        TableFunctionStub sinStub = new TableFunctionStub()
+                .add(Math.PI / 4, Math.sqrt(2) / 2);
+        TableFunctionStub cosStub = new TableFunctionStub()
+                .add(Math.PI / 4, Math.sqrt(2) / 2);
+
+        Tan tan = new Tan(sinStub, cosStub);
+
+        assertEquals(1.0, tan.calculate(Math.PI / 4, EPS), EPS);
     }
 
     @Test
-    void shouldCalculateTanMinusPiOverFour() {
-        assertEquals(-1.0, tan.calculate(-Math.PI / 4), EPS);
-    }
+    void shouldReturnNaNWhenCosIsZero() {
+        TableFunctionStub sinStub = new TableFunctionStub()
+                .add(Math.PI / 2, 1.0);
+        TableFunctionStub cosStub = new TableFunctionStub()
+                .add(Math.PI / 2, 0.0);
 
-    @Test
-    void shouldReturnNaNAtPiOverTwo() {
-        assertTrue(Double.isNaN(tan.calculate(Math.PI / 2)));
-    }
+        Tan tan = new Tan(sinStub, cosStub);
 
-    @Test
-    void shouldReturnNaNNearDiscontinuityIfExactPoint() {
-        assertTrue(Double.isNaN(tan.calculate(-Math.PI / 2)));
+        assertTrue(Double.isNaN(tan.calculate(Math.PI / 2, EPS)));
     }
 }
