@@ -9,13 +9,15 @@ import org.example.math.Log3;
 import org.example.math.Sec;
 import org.example.math.Sin;
 import org.example.math.Tan;
-import org.example.stub.TableFunctionStub;
 import org.example.testutil.CsvTestData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class IntegrationTest {
 
@@ -142,12 +144,19 @@ class IntegrationTest {
         AbstractFunction log10 = new Log10(ln);
 
         double logX = 8.0;
+        AbstractFunction stubLn = mock(AbstractFunction.class);
+        AbstractFunction stubLog2 = mock(AbstractFunction.class);
+        AbstractFunction stubLog3 = mock(AbstractFunction.class);
+        AbstractFunction stubLog10 = mock(AbstractFunction.class);
+
+        when(stubLn.calculate(eq(logX), eq(EPS))).thenReturn(Math.log(logX));
+        when(stubLog2.calculate(eq(logX), eq(EPS))).thenReturn(3.0);
+        when(stubLog3.calculate(eq(logX), eq(EPS))).thenReturn(Math.log(logX) / Math.log(3.0));
+        when(stubLog10.calculate(eq(logX), eq(EPS))).thenReturn(Math.log10(logX));
+
         Function trigStage = new Function(
                 sin, cos, tan, sec, csc,
-                new TableFunctionStub().add(logX, Math.log(logX)),
-                new TableFunctionStub().add(logX, 3.0),
-                new TableFunctionStub().add(logX, Math.log(logX) / Math.log(3.0)),
-                new TableFunctionStub().add(logX, Math.log10(logX))
+                stubLn, stubLog2, stubLog3, stubLog10
         );
 
         Function finalSystem = new Function(
